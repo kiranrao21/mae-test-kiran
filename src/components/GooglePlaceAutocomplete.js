@@ -6,6 +6,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import { List } from 'antd';
 
 const GooglePlaceAutocomplete = () => {
   const [map, setMap] = useState(null);
@@ -14,13 +15,15 @@ const GooglePlaceAutocomplete = () => {
   const dispatch = useDispatch();
   const searches = useSelector((state) => state.places.searches);
 
-  const handlePlaceSelect = async (selectedAddress) => {
+  const handlePlaceSelect = async (address) => {
     try {
-      const results = await geocodeByAddress(selectedAddress);
+      const results = await geocodeByAddress(address);
       const latLng = await getLatLng(results[0]);
-      dispatch(addSearch(latLng));
-      setCenter(latLng); // Set the center to the selected place's coordinates
-      setAddress(selectedAddress);
+      if(results.length > 0) {
+        dispatch(addSearch({...latLng, address: results[0].formatted_address}));
+        setAddress('');
+      }
+      
     } catch (error) {
       console.error('Error selecting place:', error);
     }
@@ -105,14 +108,17 @@ const GooglePlaceAutocomplete = () => {
           })}
         </GoogleMap>
       </div>
-      <div>
-        History
-        <ul>
-          {searches.map((search, index) => (
-            <li key={index}>{search.lat}, {search.lng}</li>
-          ))}
-        </ul>
-      </div>
+      <List
+            header={<div>History</div>}
+            bordered
+            dataSource={searches}
+            renderItem={(item) => (
+              <List.Item>
+                 {item.address}
+              </List.Item>
+            )}
+            >
+      </List>
     </LoadScript>
   );
 };
