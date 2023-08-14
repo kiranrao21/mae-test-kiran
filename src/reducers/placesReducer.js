@@ -1,4 +1,4 @@
-// reducers/placesReducer.js
+// placesReducer.js
 import { ADD_PLACE } from '../constants/types';
 
 const initialState = {

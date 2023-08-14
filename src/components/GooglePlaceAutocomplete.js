@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPlaceDetails } from '../actions/placesActions';
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
 
-const GooglePlaceAutocomplete = () => {
+import React, { useState, useEffect  } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSearch } from '../actions/placesActions';
+
+  const GooglePlaceAutocomplete = () => {
+
+  const [map, setMap] = useState(null); // State to store GoogleMap instance
   const [address, setAddress] = useState('');
   const dispatch = useDispatch();
   const searches = useSelector((state) => state.places.searches);
@@ -16,7 +19,7 @@ const GooglePlaceAutocomplete = () => {
     try {
       const results = await geocodeByAddress(address);
       const latLng = await getLatLng(results[0]);
-      dispatch(fetchPlaceDetails(results[0].place_id));
+      dispatch(addSearch(latLng));
     } catch (error) {
       console.error('Error selecting place:', error);
     }
@@ -25,6 +28,21 @@ const GooglePlaceAutocomplete = () => {
   const handleChange = (address) => {
     setAddress(address);
   };
+
+    // Calculate center and zoom for the map
+    useEffect(() => {
+      if (map && searches.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        searches.forEach((search) => {
+          if (search.geometry && search.geometry.location) {
+            const { lat, lng } = search.geometry.location;
+            bounds.extend(new window.google.maps.LatLng(lat, lng));
+          }
+        });
+  
+        map.fitBounds(bounds);
+      }
+    }, [searches, map]);
 
   return (
     <LoadScript
@@ -68,19 +86,33 @@ const GooglePlaceAutocomplete = () => {
 
         <GoogleMap
           mapContainerStyle={{ height: '400px', width: '800px' }}
-          center={{ lat: 0, lng: 0 }}
-          zoom={2}
+          center={{ lat: 3.1319197, lng: 101.6840589 }}
+          zoom={10}
+          onLoad={(mapInstance) => setMap(mapInstance)}
         >
-          {searches.map((search, index) => (
-            <Marker
-              key={index}
-              position={{
-                lat: search.geometry.location.lat,
-                lng: search.geometry.location.lng,
-              }}
-            />
-          ))}
+          {searches.map((search, index) => {
+            console.log('search.lat: ',search.lat)
+            console.log('search.lng: ',search.lng)
+              return (
+                <Marker
+                  key={index}
+                  position={{
+                    lat: search.lat,
+                    lng: search.lng,
+                  }}
+                />
+              );
+          })}
         </GoogleMap>
+      </div>
+      <div>
+          History
+          <ul>
+            {
+              searches.map((search,index)=>{return (<li>{search.lat},{search.lng}</li>)})
+            }
+            <li></li>
+          </ul>
       </div>
     </LoadScript>
   );

@@ -1,0 +1,68 @@
+/*
+  _______    _     _               __    _____            _             _   
+ |__   __|  | |   | |             / _|  / ____|          | |           | |  
+    | | __ _| |__ | | ___    ___ | |_  | |     ___  _ __ | |_ ___ _ __ | |_ 
+    | |/ _` | '_ \| |/ _ \  / _ \|  _| | |    / _ \| '_ \| __/ _ \ '_ \| __|
+    | | (_| | |_) | |  __/ | (_) | |   | |___| (_) | | | | ||  __/ | | | |_ 
+    |_|\__,_|_.__/|_|\___|  \___/|_|    \_____\___/|_| |_|\__\___|_| |_|\__|
+
+    Ctrl F to go to the particular styles
+    
+    1.0 Color variables
+    2.0 Global styles
+    3.0 Header 
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Oswald:wght@500&display=swap');
+
+// 1.0 Color variables
+$primary-color: #243271;
+$secondary-color: #6c757d;
+$background-color: #e8f2fa;
+$title-color:#243271;
+
+// 2.0 Global styles
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.wrap-1 {
+    max-width: 71.25em;
+    margin-left: auto;
+    margin-right: auto;
+  }
+.wrap-2 {
+    max-width: 73.25em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+.section {
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+.section.pt-1 {
+    padding-top: 1em;
+}
+.section.pb-1 {
+    padding-bottom: 1em;
+}
+.centralized {
+    margin-left: auto;
+    margin-right: auto;
+}
+.flex-box.gap-1 {
+    gap: 1em;
+}
+
+// 3.0 Header 
+h1 {
+  font-size: 28px;
+  color: $primary-color;
+  margin-bottom: 20px;
+  text-align: center;
+}
