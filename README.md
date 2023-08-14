@@ -1,4 +1,4 @@
-# Project Movies
+# Google Place Autocomplete
 
 Welcome to the Google Place Automcomplete repository.
 
