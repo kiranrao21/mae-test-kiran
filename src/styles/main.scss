@@ -11,6 +11,7 @@
     1.0 Color variables
     2.0 Global styles
     3.0 Main Page
+    4.0 Scrollbar
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Oswald:wght@500&display=swap');
@@ -89,3 +90,58 @@ h1 {
 .history-sec{
     margin: 20px 0;
 }
+
+/* 4.0 Scrollbar */
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 0;
+    background-color: transparent;
+  }
+  
+  @media(min-width:576px){
+    ::-webkit-scrollbar {
+      height: 8px;
+    }
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #fff; 
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px; 
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+  }
+  
+  ::-webkit-scrollbar-thumb:active {
+    background: #888; 
+  }
+  
+  /*Horizontal scrollers*/
+  .scroller::-webkit-scrollbar-track
+  {
+      border-radius: 4px;
+      background-color: transparent;
+  }
+  
+  .scroller::-webkit-scrollbar
+  {
+      width: 4px;
+    height: 8px;
+      background-color: transparent;
+  }
+  
+  .scroller::-webkit-scrollbar-thumb
+  {
+      border-radius: 4px;
+      background-color: rgba(119, 118, 118, 0.2);
+  }
+  .scroller{
+    overflow: auto;
+    white-space: nowrap;
+  }

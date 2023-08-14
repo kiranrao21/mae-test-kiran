@@ -49,7 +49,7 @@ const GooglePlaceAutocomplete = () => {
 
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyCk1hEl4OHzrckfolVXXKSTd8YT-903j94"
+      googleMapsApiKey={`${process.env.REACT_APP_KEY}`}
       libraries={['places']}
     >
       <div className='main-wrapper'>
