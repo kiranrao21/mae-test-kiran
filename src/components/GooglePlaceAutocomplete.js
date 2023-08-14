@@ -6,12 +6,12 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
-import { List } from 'antd';
+import { Input, List } from 'antd';
 
 const GooglePlaceAutocomplete = () => {
   const [map, setMap] = useState(null);
   const [address, setAddress] = useState('');
-  const [center, setCenter] = useState({ lat: 3.1319197, lng: 101.6840589 }); // Default center
+  const [center] = useState({ lat: 3.1319197, lng: 101.6840589 }); // Default center
   const dispatch = useDispatch();
   const searches = useSelector((state) => state.places.searches);
 
@@ -42,7 +42,8 @@ const GooglePlaceAutocomplete = () => {
         }
       });
 
-      map.fitBounds(bounds);
+      const padding = 50;
+      map.fitBounds(bounds, {padding});
     }
   }, [searches, map]);
 
@@ -51,7 +52,7 @@ const GooglePlaceAutocomplete = () => {
       googleMapsApiKey="AIzaSyCk1hEl4OHzrckfolVXXKSTd8YT-903j94"
       libraries={['places']}
     >
-      <div>
+      <div className='main-wrapper'>
         <PlacesAutocomplete
           value={address}
           onChange={handleChange}
@@ -59,37 +60,43 @@ const GooglePlaceAutocomplete = () => {
         >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div>
-              <input
+              <Input
                 {...getInputProps({
                   placeholder: 'Enter a place',
-                })}
-              />
+                })}>
+                  </Input>
+                  {loading ? <div>Loading...</div> : null}
               <div>
-                {loading ? <div>Loading...</div> : null}
+                <List
+                  size="small"
+                  bordered
+                >
                 {suggestions.map((suggestion) => {
                   const style = {
                     backgroundColor: suggestion.active ? '#41b6e6' : '#fff',
                   };
                   return (
-                    <div
+                    <List.Item
                       key={suggestion.placeId}
                       {...getSuggestionItemProps(suggestion, {
                         style,
                       })}
                     >
                       {suggestion.description}
-                    </div>
+                    </List.Item>
                   );
                 })}
+                </List>
               </div>
             </div>
           )}
         </PlacesAutocomplete>
 
+        <div className="map">
         <GoogleMap
-          mapContainerStyle={{ height: '400px', width: '800px' }}
-          center={center} // Set the center of the map
-          zoom={10}
+          mapContainerStyle={{ height: '400px', width: '100%' }}
+          center={center}
+          zoom={5}
           onLoad={(mapInstance) => setMap(mapInstance)}
         >
           {searches.map((search, index) => {
@@ -107,7 +114,10 @@ const GooglePlaceAutocomplete = () => {
             return null;
           })}
         </GoogleMap>
+        </div>
+
       </div>
+      <div className='history-sec'>
       <List
             header={<div>History</div>}
             bordered
@@ -119,6 +129,7 @@ const GooglePlaceAutocomplete = () => {
             )}
             >
       </List>
+      </div>
     </LoadScript>
   );
 };

@@ -10,7 +10,7 @@
     
     1.0 Color variables
     2.0 Global styles
-    3.0 Header 
+    3.0 Main Page
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Oswald:wght@500&display=swap');
@@ -59,10 +59,33 @@ body {
     gap: 1em;
 }
 
-// 3.0 Header 
+// 3.0 Main Page
 h1 {
   font-size: 28px;
   color: $primary-color;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.main-wrapper{
+    width: 100%;
+    margin: 0 auto;
+
+    .map {
+        flex: 1;
+        height: auto;
+    }
+
+    input{
+        margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+        max-width: 100%;
+        flex-direction: column;
+      }
+}
+
+.history-sec{
+    margin: 20px 0;
 }
