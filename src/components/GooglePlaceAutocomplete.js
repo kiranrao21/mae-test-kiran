@@ -1,53 +1,52 @@
+import React, { useState, useEffect } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSearch } from '../actions/placesActions';
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
 
-import React, { useState, useEffect  } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { useDispatch, useSelector } from 'react-redux';
-import { addSearch } from '../actions/placesActions';
-
-  const GooglePlaceAutocomplete = () => {
-
-  const [map, setMap] = useState(null); // State to store GoogleMap instance
+const GooglePlaceAutocomplete = () => {
+  const [map, setMap] = useState(null);
   const [address, setAddress] = useState('');
+  const [center, setCenter] = useState({ lat: 3.1319197, lng: 101.6840589 }); // Default center
   const dispatch = useDispatch();
   const searches = useSelector((state) => state.places.searches);
 
-  const handlePlaceSelect = async (address) => {
+  const handlePlaceSelect = async (selectedAddress) => {
     try {
-      const results = await geocodeByAddress(address);
+      const results = await geocodeByAddress(selectedAddress);
       const latLng = await getLatLng(results[0]);
       dispatch(addSearch(latLng));
+      setCenter(latLng); // Set the center to the selected place's coordinates
+      setAddress(selectedAddress);
     } catch (error) {
       console.error('Error selecting place:', error);
     }
   };
 
-  const handleChange = (address) => {
-    setAddress(address);
+  const handleChange = (newAddress) => {
+    setAddress(newAddress);
   };
 
-    // Calculate center and zoom for the map
-    useEffect(() => {
-      if (map && searches.length > 0) {
-        const bounds = new window.google.maps.LatLngBounds();
-        searches.forEach((search) => {
-          if (search.geometry && search.geometry.location) {
-            const { lat, lng } = search.geometry.location;
-            bounds.extend(new window.google.maps.LatLng(lat, lng));
-          }
-        });
-  
-        map.fitBounds(bounds);
-      }
-    }, [searches, map]);
+  useEffect(() => {
+    if (map && searches.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      searches.forEach((search) => {
+        if (search.lat && search.lng) {
+          bounds.extend(new window.google.maps.LatLng(search.lat, search.lng));
+        }
+      });
+
+      map.fitBounds(bounds);
+    }
+  }, [searches, map]);
 
   return (
     <LoadScript
-      googleMapsApiKey= 'AIzaSyCk1hEl4OHzrckfolVXXKSTd8YT-903j94'
-      libraries={['places']} // Add 'libraries' prop with 'places'
+      googleMapsApiKey="AIzaSyCk1hEl4OHzrckfolVXXKSTd8YT-903j94"
+      libraries={['places']}
     >
       <div>
         <PlacesAutocomplete
@@ -86,13 +85,12 @@ import { addSearch } from '../actions/placesActions';
 
         <GoogleMap
           mapContainerStyle={{ height: '400px', width: '800px' }}
-          center={{ lat: 3.1319197, lng: 101.6840589 }}
+          center={center} // Set the center of the map
           zoom={10}
           onLoad={(mapInstance) => setMap(mapInstance)}
         >
           {searches.map((search, index) => {
-            console.log('search.lat: ',search.lat)
-            console.log('search.lng: ',search.lng)
+            if (search.lat && search.lng) {
               return (
                 <Marker
                   key={index}
@@ -102,17 +100,18 @@ import { addSearch } from '../actions/placesActions';
                   }}
                 />
               );
+            }
+            return null;
           })}
         </GoogleMap>
       </div>
       <div>
-          History
-          <ul>
-            {
-              searches.map((search,index)=>{return (<li>{search.lat},{search.lng}</li>)})
-            }
-            <li></li>
-          </ul>
+        History
+        <ul>
+          {searches.map((search, index) => (
+            <li key={index}>{search.lat}, {search.lng}</li>
+          ))}
+        </ul>
       </div>
     </LoadScript>
   );
